@@ -25,6 +25,16 @@ menu_modulo = st.sidebar.selectbox("Módulos da Gestão da Equipe", [
 # --- ATALHO PARA O SEGUNDO APLICATIVO NA BARRA LATERAL ---
 st.sidebar.divider()
 st.sidebar.markdown("### 🔗 Módulos Complementares")
+
+# Substitua a URL abaixo pelo link exato do seu segundo aplicativo assim que fizer o deploy dele no Streamlit Cloud
+url_primeiro_app = "https://gestao-agencia-banco-9d3giuxu7ldste3wj5zrp4.streamlit.app/" 
+
+st.sidebar.link_button("🎯 Ir para Gestão da Agencia", url_primeiro_app, use_container_width=True)
+# --------------------------------------------------------
+
+# --- ATALHO PARA O SEGUNDO APLICATIVO NA BARRA LATERAL ---
+st.sidebar.divider()
+st.sidebar.markdown("### 🔗 Módulos Complementares")
 # Substitua o link abaixo pelo link real do seu segundo app publicado no Streamlit Cloud
 st.sidebar.page_link("https://gestao-agencia-banco-9d3giuxu7ldste3wj5zrp4.streamlit.app/", label="Ir para Gestão da Agencia", icon="🎯")
 # --------------------------------------------------------
