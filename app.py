@@ -166,3 +166,13 @@ elif menu == "Painel de Alertas e Metas":
         st.bar_chart(df_chart)
     else:
         st.warning("Sem dados de equipe cadastrados no momento.")
+
+# --- ATALHO PARA O SEGUNDO APLICATIVO NA BARRA LATERAL ---
+st.sidebar.divider()
+st.sidebar.markdown("### 🔗 Módulos Complementares")
+
+# Substitua a URL abaixo pelo link exato do seu segundo aplicativo assim que fizer o deploy dele no Streamlit Cloud
+url_segundo_app = "https://seu-segundo-app.streamlit.app" 
+
+st.sidebar.link_button("🎯 Ir para Gestão da Equipe", url_segundo_app, use_container_width=True)
+# --------------------------------------------------------
