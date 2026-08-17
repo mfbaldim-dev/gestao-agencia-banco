@@ -8,20 +8,26 @@ st.set_page_config(page_title="Painel de Gestão da Agência", page_icon="📊",
 if "equipe" not in st.session_state:
     st.session_state.equipe = []
 
-# Inicializar lista temporária de produtos na sessão para o formulário de cadastro
 if "temp_produtos" not in st.session_state:
     st.session_state.temp_produtos = []
 
 st.title("📊 Painel de Gestão do Gerente de Agência")
 st.markdown("Acompanhamento de rotinas, crédito, equipe e metas comerciais.")
 
-# Menu lateral
-menu = st.sidebar.selectbox("Navegação", [
+# Menu lateral principal
+menu = st.sidebar.selectbox("Navegação Principal", [
     "Rotinas Diárias (Checklist)", 
     "Cadastrar Colaborador", 
     "Registrar Produção (FLOG)", 
     "Painel de Alertas e Metas"
 ], key="menu_navegacao")
+
+# --- ATALHO PARA O SEGUNDO APLICATIVO NA BARRA LATERAL ---
+st.sidebar.divider()
+st.sidebar.markdown("### 🔗 Módulos Complementares")
+# Substitua o link abaixo pelo link real do seu segundo app publicado no Streamlit Cloud
+st.sidebar.page_link("https://seu-segundo-app.streamlit.app", label="Ir para Gestão da Equipe (Rotina Inegociável)", icon="🎯")
+# --------------------------------------------------------
 
 # 1. ROTINAS DIÁRIAS
 if menu == "Rotinas Diárias (Checklist)":
@@ -53,21 +59,19 @@ if menu == "Rotinas Diárias (Checklist)":
 elif menu == "Cadastrar Colaborador":
     st.header("👥 Cadastro de Gerentes e Metas por Produto")
     
-    # Informações básicas do gerente
     nome = st.text_input("Nome do Gerente", key="input_nome_gerente")
     segmento = st.selectbox("Segmento", ["Prime", "PJ"], key="select_segmento_gerente")
     
     st.divider()
     st.subheader("📦 Composição de Produtos e Metas")
     
-    # Seção para adicionar produtos de forma dinâmica
     col_p1, col_p2, col_p3 = st.columns([2, 2, 1])
     with col_p1:
         produto_nome = st.text_input("Nome do Produto (ex: Crédito PJ, Seguros)", key="input_nome_prod")
     with col_p2:
         produto_meta = st.number_input("Meta do Produto (R$)", min_value=0.0, step=500.0, key="input_meta_prod")
     with col_p3:
-        st.write("") # Espaçamento vertical
+        st.write("") 
         st.write("")
         btn_add_produto = st.button("➕ Adicionar Produto")
         
@@ -81,7 +85,6 @@ elif menu == "Cadastrar Colaborador":
         else:
             st.warning("Informe o nome do produto antes de adicionar.")
             
-    # Exibir a lista temporária de produtos adicionados
     if st.session_state.temp_produtos:
         st.markdown("**Produtos já inseridos para este gerente:**")
         df_temp = pd.DataFrame(st.session_state.temp_produtos)
@@ -93,14 +96,12 @@ elif menu == "Cadastrar Colaborador":
     
     st.divider()
     
-    # Botão final para salvar o cadastro completo
     if st.button("💾 Cadastrar Gerente Completo", type="primary"):
         if nome.strip() == "":
             st.error("Por favor, preencha o nome do colaborador.")
         elif not st.session_state.temp_produtos:
             st.error("Adicione pelo menos um produto e meta antes de finalizar o cadastro.")
         else:
-            # Calcular a meta total somando as metas dos produtos inseridos
             meta_total = sum([p["meta_produto"] for p in st.session_state.temp_produtos])
             
             st.session_state.equipe.append({
@@ -111,7 +112,6 @@ elif menu == "Cadastrar Colaborador":
                 "produtos": st.session_state.temp_produtos.copy()
             })
             
-            # Limpar os dados temporários após o cadastro com sucesso
             st.session_state.temp_produtos = []
             st.success(f"Gerente {nome} cadastrado com sucesso com meta total de R$ {meta_total:,.2f}!")
 
@@ -139,7 +139,6 @@ elif menu == "Painel de Alertas e Metas":
     st.info("💡 **Lembrete de Gestão de Risco:** Monitorar links de Preventivo de Inadimplência, PDD e carteiras abaixo de 60%.")
     
     if st.session_state.equipe:
-        # Exibir tabela resumida da equipe
         df = pd.DataFrame([{
             "nome": c["nome"],
             "segmento": c["segmento"],
@@ -153,7 +152,6 @@ elif menu == "Painel de Alertas e Metas":
         st.subheader("Resumo da Equipe")
         st.dataframe(df, use_container_width=True)
         
-        # Detalhar os produtos de cada gerente cadastrado
         st.subheader("Detalhamento de Metas por Produto")
         for c in st.session_state.equipe:
             with st.expander(f"Gerente: {c['nome']} ({c['segmento']})"):
@@ -163,7 +161,6 @@ elif menu == "Painel de Alertas e Metas":
                 else:
                     st.write("Nenhum produto detalhado cadastrado.")
         
-        # Gráfico seguro usando st.bar_chart
         st.subheader("Progresso Geral por Gerente")
         df_chart = df.set_index("nome")[["realizado", "meta"]]
         st.bar_chart(df_chart)
