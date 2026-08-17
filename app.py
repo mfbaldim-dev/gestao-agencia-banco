@@ -126,4 +126,46 @@ elif menu == "Registrar Produção (FLOG)":
         colaborador_escolhido = st.selectbox("Selecione o Gerente", nomes, key="select_colab")
         valor_produzido = st.number_input("Valor realizado hoje (R$)", min_value=0.0, step=500.0, key="val_prod")
         
-        if st
+        if st.button("Atualizar Produção"):
+            for c in st.session_state.equipe:
+                if c["nome"] == colaborador_escolhido:
+                    c["realizado"] += valor_produzido
+                    st.success(f"Produção de R$ {valor_produzido:,.2f} somada para {colaborador_escolhido}!")
+
+# 4. PAINEL DE ALERTAS E METAS
+elif menu == "Painel de Alertas e Metas":
+    st.header("📊 Acompanhamento de Metas e Alertas")
+    
+    st.info("💡 **Lembrete de Gestão de Risco:** Monitorar links de Preventivo de Inadimplência, PDD e carteiras abaixo de 60%.")
+    
+    if st.session_state.equipe:
+        # Exibir tabela resumida da equipe
+        df = pd.DataFrame([{
+            "nome": c["nome"],
+            "segmento": c["segmento"],
+            "meta": c["meta"],
+            "realizado": c["realizado"]
+        } for c in st.session_state.equipe])
+        
+        df["Atingimento (%)"] = (df["realizado"] / df["meta"]) * 100
+        df["Atingimento (%)"] = df["Atingimento (%)"].fillna(0).round(1)
+        
+        st.subheader("Resumo da Equipe")
+        st.dataframe(df, use_container_width=True)
+        
+        # Detalhar os produtos de cada gerente cadastrado
+        st.subheader("Detalhamento de Metas por Produto")
+        for c in st.session_state.equipe:
+            with st.expander(f"Gerente: {c['nome']} ({c['segmento']})"):
+                if "produtos" in c and c["produtos"]:
+                    df_prod = pd.DataFrame(c["produtos"])
+                    st.dataframe(df_prod, use_container_width=True)
+                else:
+                    st.write("Nenhum produto detalhado cadastrado.")
+        
+        # Gráfico seguro usando st.bar_chart
+        st.subheader("Progresso Geral por Gerente")
+        df_chart = df.set_index("nome")[["realizado", "meta"]]
+        st.bar_chart(df_chart)
+    else:
+        st.warning("Sem dados de equipe cadastrados no momento.")
