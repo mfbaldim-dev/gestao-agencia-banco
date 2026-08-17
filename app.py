@@ -26,7 +26,7 @@ menu = st.sidebar.selectbox("Navegação Principal", [
 st.sidebar.divider()
 st.sidebar.markdown("### 🔗 Módulos Complementares")
 # Substitua o link abaixo pelo link real do seu segundo app publicado no Streamlit Cloud
-st.sidebar.page_link("https://seu-segundo-app.streamlit.app", label="Ir para Gestão da Equipe", icon="🎯")
+st.sidebar.page_link("https://gestao-agencia-banco-b6dn79g7kqf2a3zntupcau.streamlit.app/", label="Ir para Gestão da Equipe", icon="🎯")
 # --------------------------------------------------------
 
 # 1. ROTINAS DIÁRIAS
