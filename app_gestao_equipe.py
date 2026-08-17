@@ -32,13 +32,6 @@ url_primeiro_app = "https://gestao-agencia-banco-9d3giuxu7ldste3wj5zrp4.streamli
 st.sidebar.link_button("🎯 Ir para Gestão da Agencia", url_primeiro_app, use_container_width=True)
 # --------------------------------------------------------
 
-# --- ATALHO PARA O SEGUNDO APLICATIVO NA BARRA LATERAL ---
-st.sidebar.divider()
-st.sidebar.markdown("### 🔗 Módulos Complementares")
-# Substitua o link abaixo pelo link real do seu segundo app publicado no Streamlit Cloud
-st.sidebar.page_link("https://gestao-agencia-banco-9d3giuxu7ldste3wj5zrp4.streamlit.app/", label="Ir para Gestão da Agencia", icon="🎯")
-# --------------------------------------------------------
-
 # 1. PILARES BSC E VISÃO GERAL
 if menu_modulo == "Pilares BSC & Alinhamento":
     st.header("🏛️ Os Pilares da nossa Gestão (BSC 2026)")
