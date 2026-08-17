@@ -8,6 +8,10 @@ st.set_page_config(page_title="Painel de Gestão da Agência", page_icon="📊",
 if "equipe" not in st.session_state:
     st.session_state.equipe = []
 
+# Inicializar lista temporária de produtos na sessão para o formulário de cadastro
+if "temp_produtos" not in st.session_state:
+    st.session_state.temp_produtos = []
+
 st.title("📊 Painel de Gestão do Gerente de Agência")
 st.markdown("Acompanhamento de rotinas, crédito, equipe e metas comerciais.")
 
@@ -45,27 +49,71 @@ if menu == "Rotinas Diárias (Checklist)":
         st.checkbox("Realizar feedbacks e ajustes diários", key="c10")
         st.checkbox("Planejar o próximo dia e prioridades", key="c11")
 
-# 2. CADASTRAR COLABORADOR
+# 2. CADASTRAR COLABORADOR E PRODUTOS
 elif menu == "Cadastrar Colaborador":
-    st.header("👥 Cadastro de Gerentes (Prime / PJ)")
+    st.header("👥 Cadastro de Gerentes e Metas por Produto")
     
-    with st.form("form_colaborador", clear_on_submit=True):
-        nome = st.text_input("Nome do Gerente")
-        segmento = st.selectbox("Segmento", ["Prime", "PJ"])
-        meta = st.number_input("Meta atribuída no POBJ (R$)", min_value=0.0, step=1000.0)
+    # Informações básicas do gerente
+    nome = st.text_input("Nome do Gerente", key="input_nome_gerente")
+    segmento = st.selectbox("Segmento", ["Prime", "PJ"], key="select_segmento_gerente")
+    
+    st.divider()
+    st.subheader("📦 Composição de Produtos e Metas")
+    
+    # Seção para adicionar produtos de forma dinâmica
+    col_p1, col_p2, col_p3 = st.columns([2, 2, 1])
+    with col_p1:
+        produto_nome = st.text_input("Nome do Produto (ex: Crédito PJ, Seguros)", key="input_nome_prod")
+    with col_p2:
+        produto_meta = st.number_input("Meta do Produto (R$)", min_value=0.0, step=500.0, key="input_meta_prod")
+    with col_p3:
+        st.write("") # Espaçamento vertical
+        st.write("")
+        btn_add_produto = st.button("➕ Adicionar Produto")
         
-        submitted = st.form_submit_button("Cadastrar")
-        if submitted:
-            if nome.strip() != "":
-                st.session_state.equipe.append({
-                    "nome": nome,
-                    "segmento": segmento,
-                    "meta": meta,
-                    "realizado": 0.0
-                })
-                st.success(f"Colaborador {nome} cadastrado com sucesso!")
-            else:
-                st.error("Por favor, preencha o nome do colaborador.")
+    if btn_add_produto:
+        if produto_nome.strip() != "":
+            st.session_state.temp_produtos.append({
+                "produto": produto_nome,
+                "meta_produto": produto_meta
+            })
+            st.success(f"Produto '{produto_nome}' adicionado à lista!")
+        else:
+            st.warning("Informe o nome do produto antes de adicionar.")
+            
+    # Exibir a lista temporária de produtos adicionados
+    if st.session_state.temp_produtos:
+        st.markdown("**Produtos já inseridos para este gerente:**")
+        df_temp = pd.DataFrame(st.session_state.temp_produtos)
+        st.dataframe(df_temp, use_container_width=True)
+        
+        if st.button("🗑️ Limpar Lista de Produtos"):
+            st.session_state.temp_produtos = []
+            st.rerun()
+    
+    st.divider()
+    
+    # Botão final para salvar o cadastro completo
+    if st.button("💾 Cadastrar Gerente Completo", type="primary"):
+        if nome.strip() == "":
+            st.error("Por favor, preencha o nome do colaborador.")
+        elif not st.session_state.temp_produtos:
+            st.error("Adicione pelo menos um produto e meta antes de finalizar o cadastro.")
+        else:
+            # Calcular a meta total somando as metas dos produtos inseridos
+            meta_total = sum([p["meta_produto"] for p in st.session_state.temp_produtos])
+            
+            st.session_state.equipe.append({
+                "nome": nome,
+                "segmento": segmento,
+                "meta": meta_total,
+                "realizado": 0.0,
+                "produtos": st.session_state.temp_produtos.copy()
+            })
+            
+            # Limpar os dados temporários após o cadastro com sucesso
+            st.session_state.temp_produtos = []
+            st.success(f"Gerente {nome} cadastrado com sucesso com meta total de R$ {meta_total:,.2f}!")
 
 # 3. REGISTRAR PRODUÇÃO
 elif menu == "Registrar Produção (FLOG)":
@@ -78,30 +126,4 @@ elif menu == "Registrar Produção (FLOG)":
         colaborador_escolhido = st.selectbox("Selecione o Gerente", nomes, key="select_colab")
         valor_produzido = st.number_input("Valor realizado hoje (R$)", min_value=0.0, step=500.0, key="val_prod")
         
-        if st.button("Atualizar Produção"):
-            for c in st.session_state.equipe:
-                if c["nome"] == colaborador_escolhido:
-                    c["realizado"] += valor_produzido
-                    st.success(f"Produção de R$ {valor_produzido:,.2f} somada para {colaborador_escolhido}!")
-
-# 4. PAINEL DE ALERTAS E METAS
-elif menu == "Painel de Alertas e Metas":
-    st.header("📊 Acompanhamento de Metas e Alertas")
-    
-    st.info("💡 **Lembrete de Gestão de Risco:** Monitorar links de Preventivo de Inadimplência, PDD e carteiras abaixo de 60%.")
-    
-    if st.session_state.equipe:
-        # Criando o DataFrame de forma segura
-        df = pd.DataFrame(st.session_state.equipe)
-        df["Atingimento (%)"] = (df["realizado"] / df["meta"]) * 100
-        df["Atingimento (%)"] = df["Atingimento (%)"].fillna(0).round(1)
-        
-        # Exibir tabela formatada
-        st.dataframe(df, use_container_width=True)
-        
-        # Gráfico seguro usando st.bar_chart com índice limpo
-        st.subheader("Progresso por Gerente")
-        df_chart = df.set_index("nome")[["realizado", "meta"]]
-        st.bar_chart(df_chart)
-    else:
-        st.warning("Sem dados de equipe cadastrados no momento.")
+        if st
