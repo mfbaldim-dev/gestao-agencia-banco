@@ -26,7 +26,7 @@ menu = st.sidebar.selectbox("Navegação Principal", [
 st.sidebar.divider()
 st.sidebar.markdown("### 🔗 Módulos Complementares")
 # Substitua o link abaixo pelo link real do seu segundo app publicado no Streamlit Cloud
-st.sidebar.page_link("https://seu-segundo-app.streamlit.app", label="Ir para Gestão da Equipe (Rotina Inegociável)", icon="🎯")
+st.sidebar.page_link("https://seu-segundo-app.streamlit.app", label="Ir para Gestão da Equipe", icon="🎯")
 # --------------------------------------------------------
 
 # 1. ROTINAS DIÁRIAS
@@ -167,12 +167,4 @@ elif menu == "Painel de Alertas e Metas":
     else:
         st.warning("Sem dados de equipe cadastrados no momento.")
 
-# --- ATALHO PARA O SEGUNDO APLICATIVO NA BARRA LATERAL ---
-st.sidebar.divider()
-st.sidebar.markdown("### 🔗 Módulos Complementares")
 
-# Substitua a URL abaixo pelo link exato do seu segundo aplicativo assim que fizer o deploy dele no Streamlit Cloud
-url_segundo_app = "https://seu-segundo-app.streamlit.app" 
-
-st.sidebar.link_button("🎯 Ir para Gestão da Equipe", url_segundo_app, use_container_width=True)
-# --------------------------------------------------------
