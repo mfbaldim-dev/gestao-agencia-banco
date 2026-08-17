@@ -27,7 +27,7 @@ st.sidebar.divider()
 st.sidebar.markdown("### 🔗 Navegação Geral")
 
 # Insira aqui o link do seu primeiro aplicativo Streamlit publicado
-url_primeiro_app = "https://seu-primeiro-app.streamlit.app" 
+url_primeiro_app = "https://gestao-agencia-banco-9d3giuxu7ldste3wj5zrp4.streamlit.app/" 
 
 st.sidebar.link_button("📊 Voltar para o Painel Principal", url_primeiro_app, use_container_width=True)
 # -----------------------------------------------------------------
