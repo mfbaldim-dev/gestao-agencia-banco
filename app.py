@@ -22,16 +22,6 @@ menu = st.sidebar.selectbox("Navegação Principal", [
     "Painel de Alertas e Metas"
 ], key="menu_navegacao")
 
-# --- ATALHO PARA O SEGUNDO APLICATIVO NA BARRA LATERAL ---
-st.sidebar.divider()
-st.sidebar.markdown("### 🔗 Módulos Complementares")
-
-# Substitua a URL abaixo pelo link exato do seu segundo aplicativo assim que fizer o deploy dele no Streamlit Cloud
-url_segundo_app = "https://gestao-agencia-banco-b6dn79g7kqf2a3zntupcau.streamlit.app/" 
-
-st.sidebar.link_button("🎯 Ir para Gestão da Equipe", url_segundo_app, use_container_width=True)
-# --------------------------------------------------------
-
 # 1. ROTINAS DIÁRIAS
 if menu == "Rotinas Diárias (Checklist)":
     st.header("🌅 Checklist de Rotinas Operacionais e Comerciais")
@@ -169,5 +159,3 @@ elif menu == "Painel de Alertas e Metas":
         st.bar_chart(df_chart)
     else:
         st.warning("Sem dados de equipe cadastrados no momento.")
-
-
