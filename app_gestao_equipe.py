@@ -22,7 +22,7 @@ menu_modulo = st.sidebar.selectbox("Módulos da Gestão da Equipe", [
     "Painel de Acompanhamento"
 ], key="menu_mod_equipe")
 
-# --- ATALHO PARA O SEGUNDO APLICATIVO NA BARRA LATERAL ---
+# --- ATALHO PARA O PRIMEIRO APLICATIVO NA BARRA LATERAL ---
 st.sidebar.divider()
 st.sidebar.markdown("### 🔗 Módulos Complementares")
 
