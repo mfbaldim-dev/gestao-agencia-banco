@@ -22,16 +22,6 @@ menu_modulo = st.sidebar.selectbox("Módulos da Gestão da Equipe", [
     "Painel de Acompanhamento"
 ], key="menu_mod_equipe")
 
-# --- ATALHO PARA O PRIMEIRO APLICATIVO NA BARRA LATERAL ---
-st.sidebar.divider()
-st.sidebar.markdown("### 🔗 Módulos Complementares")
-
-# Substitua a URL abaixo pelo link exato do seu segundo aplicativo assim que fizer o deploy dele no Streamlit Cloud
-url_primeiro_app = "https://gestao-agencia-banco-9d3giuxu7ldste3wj5zrp4.streamlit.app/" 
-
-st.sidebar.link_button("🎯 Ir para Gestão da Agencia", url_primeiro_app, use_container_width=True)
-# --------------------------------------------------------
-
 # 1. PILARES BSC E VISÃO GERAL
 if menu_modulo == "Pilares BSC & Alinhamento":
     st.header("🏛️ Os Pilares da nossa Gestão (BSC 2026)")
